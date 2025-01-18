@@ -1,2 +1,5 @@
-pdf
-output
+/convert/input/pdf/*
+!/convert/input/pdf/.gitkeep
+/convert/output/*
+!/convert/output/.gitkeep
+__pycache__
