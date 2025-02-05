@@ -6,6 +6,7 @@ import io
 import os
 import warnings
 import base64
+# https://docs.unstructured.io/open-source/core-functionality/partitioning
 
 
 warnings.filterwarnings("ignore")
@@ -24,14 +25,14 @@ def pdf_to_json(file_path: str, min_words: int = 20) -> list:
             infer_table_structure=True,
             extract_images_in_pdf=True,
             extract_image_block_types=["Image"],
-            extract_image_block_to_payload=True,  # This will convert images to base64
+            extract_image_block_to_payload=True,
             split_pdf_page=True,
             split_pdf_allow_failed=True,
             split_pdf_concurrency_level=15,
             languages=["eng"],
         )
-        element_dicts = [element.to_dict() for element in elements]
-        output_list_modified = tables_from_html(element_dicts)
+        output_list = [element.to_dict() for element in elements]
+        output_list_modified = tables_from_html(output_list)
         output_list_modified = filter_words(output_list_modified, min_words=min_words)
         return output_list_modified
     except KeyError as e:
@@ -40,18 +41,23 @@ def pdf_to_json(file_path: str, min_words: int = 20) -> list:
         return e.message
 
 
-def html_to_json(file_path: str, min_words: int = 20) -> list:
+def html_to_json(path: str, min_words: int = 20) -> list:
     """将html文件转换为json list:
     file_path:html文件路径
     min_words:筛选掉词数小于min_words的元素
     返回json list
     """
-    # elements = partition_html(filename="path/to/your/file.html")
-    # elements = partition_html(filename="example-docs/example-10k.html")
-    elements = partition_html(url="https://www.runoob.com/html/html-tutorial.html")
-    return elements.to_dict()
-    # with open("path/to/your/file.html", "r") as f:
-    # elements = partition_html(file=f)
+    try:
+        if "http" in path:
+            elements = partition_html(url=path)
+        else:
+            elements = partition_html(filename=path)
+        output_list = [element.to_dict() for element in elements]
+        return output_list
+    except KeyError as e:
+        # TODO 异常处理
+        print(e)
+        return e.message
 
 
 # TODO 图片处理
@@ -120,7 +126,7 @@ class FileConverter:
             _, ext = os.path.splitext(path)
             if ext.lower() == ".pdf":
                 results.append(pdf_to_json(path))
-            elif ext.lower() == ".html":
+            elif ext.lower() == ".html" or "http" in path:
                 results.append(html_to_json(path))
             else:
                 print(f"Unsupported file type: {path}")
@@ -133,10 +139,7 @@ class FileConverter:
 
 if __name__ == "__main__":
     file_converter = FileConverter(
-        [
-            r"C:\Users\78661\Desktop\Fintech-Dreamer\convert\input\pdf\Chung 等 - 2014 - Empirical Evaluation of Gated Recurrent Neural Net.pdf",
-            r"C:\Users\78661\Desktop\Fintech-Dreamer\convert\input\pdf\NVIDIA-2024-Annual-Report.pdf",
-        ]
+        ["新建标签页.html", "Chung 等 - 2014 - Empirical Evaluation of Gated Recurrent Neural Net.pdf"]
     )
     json = file_converter.file_to_json()
     print(json)
