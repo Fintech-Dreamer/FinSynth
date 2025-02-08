@@ -6,7 +6,7 @@ import io
 import os
 import warnings
 import base64
-# https://docs.unstructured.io/open-source/core-functionality/partitioning
+import pandas as pd
 
 
 warnings.filterwarnings("ignore")
@@ -58,6 +58,23 @@ def html_to_json(path: str, min_words: int = 20) -> list:
         # TODO 异常处理
         print(e)
         return e.message
+
+
+def csv_to_json(file_path: str, min_words: int = 20) -> list:
+    """将csv文件转换为json list:
+    file_path:csv文件路径
+    min_words:筛选掉词数小于min_words的元素
+    返回json list
+    """
+    try:
+        # 假设你的数据已经被读取到一个DataFrame中，命名为df
+        df = pd.read_csv(file_path)  # 读取CSV文件
+        output_list = df.to_dict(orient="records")  # 转换为字典
+        return output_list
+    except Exception as e:
+        # TODO 异常处理
+        print(e)
+        return e
 
 
 # TODO 图片处理
@@ -128,6 +145,8 @@ class FileConverter:
                 results.append(pdf_to_json(path))
             elif ext.lower() == ".html" or "http" in path:
                 results.append(html_to_json(path))
+            elif ext.lower() == ".csv":
+                results.append(csv_to_json(path))
             else:
                 print(f"Unsupported file type: {path}")
                 results.append(None)
@@ -138,8 +157,8 @@ class FileConverter:
 
 
 if __name__ == "__main__":
-    file_converter = FileConverter(
-        ["新建标签页.html", "Chung 等 - 2014 - Empirical Evaluation of Gated Recurrent Neural Net.pdf"]
-    )
+    file_converter = FileConverter(["Base.csv"])
     json = file_converter.file_to_json()
     print(json)
+    with open("output.json", "w", encoding="utf-8") as f:
+        f.write(str(json))
