@@ -10,3 +10,5 @@
       D["LLM大模型"]
       A --形成--> B --生成--> C --微调-->D
   ```
+
+[解决：pytesseract.pytesseract.TesseractNotFoundError: tesseract is not installed or it‘s not in your PATH. See README file for more information. - 沐小木 - 博客园](https://www.cnblogs.com/muxiaomu/p/16670619.html)
