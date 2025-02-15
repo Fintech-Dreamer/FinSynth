@@ -38,11 +38,8 @@ def pdf_to_json(file_path: str, min_words: int = 20) -> list:
             split_pdf_concurrency_level=15,
         )
         output_list = [element.to_dict() for element in elements]
-        print(len(output_list))
         output_list_modified = tables_from_html(output_list)
-        print(len(output_list_modified))
         output_list_modified = filter_words(output_list_modified, min_words=min_words)
-        print(len(output_list_modified))
         return output_list_modified
     except KeyError as e:
         print(e)
