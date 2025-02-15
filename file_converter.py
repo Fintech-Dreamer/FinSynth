@@ -146,7 +146,7 @@ def generate_questions_on_fraud(element: dict, openai_api_key: str, base_url: st
                         "QA_description": "This transaction occurred on 2023-01-22 03:56:37. The amount of $8.3 was spent in the category 'grocery_pos' at the merchant 'fraud_Deckow-O'Conner' located in Port Patrick.",
                         "QA_answer": "The transaction is Fraudulent because it happened at 03:56 AM for a little amount far from the customer."
                         What needs to be emphasized is:
-                        The output should not contain information about the variable "fraud".
+                        The description should not contain information about the variable "fraud".
                         """,
         },
         {"role": "user", "content": prompt},
