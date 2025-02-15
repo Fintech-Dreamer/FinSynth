@@ -11,7 +11,7 @@
 # MODEL = "deepseek-chat"
 # --------------------------------------------------------------------
 # Qwen api
-API_KEY = "sk-cc6e7946e16e44568726da8f51091cb8"
+API_KEY = "sk-dfcc906b01454248b2e100aeccef342b"
 API_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 MODEL = "qwen-max"
 # --------------------------------------------------------------------

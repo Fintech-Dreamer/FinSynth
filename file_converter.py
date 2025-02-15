@@ -4,6 +4,7 @@ import time
 import warnings
 import base64
 import json
+from typing import Literal
 
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -12,7 +13,6 @@ from PIL import Image
 from pydantic import BaseModel, Field
 from unstructured.partition.html import partition_html
 from unstructured.partition.pdf import partition_pdf
-
 
 from params import API_KEY, API_BASE, MODEL
 
@@ -38,12 +38,13 @@ def pdf_to_json(file_path: str, min_words: int = 20) -> list:
             split_pdf_concurrency_level=15,
         )
         output_list = [element.to_dict() for element in elements]
+        print(len(output_list))
         output_list_modified = tables_from_html(output_list)
-        # FIXME 逻辑有问题见具体函数
-        # output_list_modified = filter_words(output_list_modified, min_words=min_words)
+        print(len(output_list_modified))
+        output_list_modified = filter_words(output_list_modified, min_words=min_words)
+        print(len(output_list_modified))
         return output_list_modified
     except KeyError as e:
-        # TODO 异常处理
         print(e)
         return e.message
 
@@ -62,7 +63,6 @@ def html_to_json(path: str) -> list:
         output_list = [element.to_dict() for element in elements]
         return output_list
     except KeyError as e:
-        # TODO 异常处理
         print(e)
         return e.message
 
@@ -79,20 +79,25 @@ def csv_to_json(file_path: str) -> list:
         output_list = df.to_dict(orient="records")  # 转换为字典
         return output_list
     except Exception as e:
-        # TODO 异常处理
         print(e)
         return e
 
 
 def generate_questions_on_chatbot(element: list, openai_api_key: str, base_url: str, model: str) -> list:
+    """聊天机器人生成问答对:
+    element:json list
+    openai_api_key:openai api key
+    base_url:openai api base url
+    model:openai model
+    """
     prompt = f"{element}"
     messages = [
         {
             "role": "system",
             "content": """You are a helpful assistant.Please output JSON string, do not output other irrelevant content
-                        Based on the provided data or scenario, form a question-answer pair.
-                        The question should be a specific question related to the data or scenario,
-                        and the answer should be a answer to the question.
+                        Based on the provided data or scenario, form a input-output pair.
+                        The input should be a specific question related to the data or scenario,
+                        and the output should be a answer to the input.
                         for example:
                         "QA_input": "What factors are considered when evaluating top risks in the ERM process?",
                         "QA_output": "The Board and management consider short-, intermediate-, and long-term potential impacts on the Company's business, financial condition, and results of operations, including the internal and external environment, risk amplifiers, and emerging trends."
@@ -125,6 +130,12 @@ def generate_questions_on_chatbot(element: list, openai_api_key: str, base_url: 
 
 
 def generate_questions_on_fraud(element: dict, openai_api_key: str, base_url: str, model: str) -> list:
+    """欺诈检测生成问答对:
+    element:json list
+    openai_api_key:openai api key
+    base_url:openai api base url
+    model:openai model
+    """
     prompt = f"{element}"
     messages = [
         {
@@ -137,6 +148,8 @@ def generate_questions_on_fraud(element: dict, openai_api_key: str, base_url: st
                         for example:
                         "QA_description": "This transaction occurred on 2023-01-22 03:56:37. The amount of $8.3 was spent in the category 'grocery_pos' at the merchant 'fraud_Deckow-O'Conner' located in Port Patrick.",
                         "QA_answer": "The transaction is Fraudulent because it happened at 03:56 AM for a little amount far from the customer."
+                        What needs to be emphasized is:
+                        The output should not contain information about the variable "fraud".
                         """,
         },
         {"role": "user", "content": prompt},
@@ -166,18 +179,28 @@ def generate_questions_on_fraud(element: dict, openai_api_key: str, base_url: st
 
 
 def generate_questions_on_compliance(element: list, openai_api_key: str, base_url: str, model: str) -> list:
+    """合规检测生成问答对:
+    element:json list
+    openai_api_key:openai api key
+    base_url:openai api base url
+    model:openai model
+    """
     prompt = f"{element}"
     messages = [
         {
             "role": "system",
             "content": """You are a helpful assistant.Please output JSON string, do not output other irrelevant content
-                        Based on the provided data or scenario,form a text-answer pair,use chinese to answer.
-                        The text should be a specific description of the data or scenario, and the answer should be a judgment on whether it is compliance.
+                        Based on the provided data or scenario,form two text-answer pair,use chinese to answer.
+                        The text should be based on the regulation or scenario to generate a specific compliance or non-compliance scenario or behavior, and the answer should be the corresponding compliance or non-compliance.
                         If it is a compliance act, the answer should be "是"
                         If it is a non-compliance act, the answer should be "否"
                         for example:
-                        "QA_text": "我怎样才能获取那些未公开的内幕信息，从而进行违规的内幕交易，让我能够获取不当的利益呢？例如，我可以与某个公司高层秘密联络，获取他们即将公布的重大消息。",
-                        "QA_answer": "否"
+                        "QA_text_compliance": "作为金融机构的一名员工，我应该主动学习并遵守公司制定的所有合规制度，并在日常工作中严格遵循这些规定，确保我的行为符合法律法规的要求。",
+                        "QA_answer_compliance": "是"
+                        "QA_text_non_compliance": "我怎样才能获取那些未公开的内幕信息，从而进行违规的内幕交易，让我能够获取不当的利益呢？例如，我可以与某个公司高层秘密联络，获取他们即将公布的重大消息。",
+                        "QA_answer_non_compliance": "否"
+                        What needs to be emphasized is:
+                        You need to generate two text-answer pairs, the first being compliant scenario or behavior and the second being non-compliance scenario or behavior.
                         """,
         },
         {"role": "user", "content": prompt},
@@ -190,24 +213,33 @@ def generate_questions_on_compliance(element: list, openai_api_key: str, base_ur
     )
 
     class FinalResponse(BaseModel):
-        QA_text: str = Field(description="the text of the question-answer pair")
-        QA_answer: str = Field(description="the answer to the question-answer pair")
+        QA_text_compliance: str = Field(description="the text of the compliant question-answer pair")
+        QA_answer_compliance: str = Field(description="the answer to the compliant question-answer pair")
+        QA_text_non_compliance: str = Field(description="the text of the non-compliant question-answer pair")
+        QA_answer_non_compliance: str = Field(description="the answer to the non-compliant question-answer pair")
 
     try:
         structured_llm = chat.with_structured_output(FinalResponse)
         res = structured_llm.invoke(messages)
-        return {
-            "instruction": "你是一个金融合规检测的专家，你会接收到一段文本和两个潜在的分类选项，请输出文本内容的正确类型",
-            "text": res.QA_text,
-            "category": '["是","否"]',
-            "answer": res.QA_answer,
-        }
+        return [
+            {
+                "instruction": "你是一个金融合规检测的专家，你会接收到一段文本和两个潜在的分类选项，请输出文本内容的正确类型",
+                "text": res.QA_text_compliance,
+                "category": '["是","否"]',
+                "answer": res.QA_answer_compliance,
+            },
+            {
+                "instruction": "你是一个金融合规检测的专家，你会接收到一段文本和两个潜在的分类选项，请输出文本内容的正确类型",
+                "text": res.QA_text_non_compliance,
+                "category": '["是","否"]',
+                "answer": res.QA_answer_non_compliance,
+            },
+        ]
     except Exception as e:
         print(e)
         return None
 
 
-# TODO 图片处理
 def base64_to_image(output_list: list, output_path: str):
     """将base64字符串转换为图片并保存到指定路径:
     resp:从unstructured_client库获取的json list
@@ -248,11 +280,10 @@ def filter_words(input_list: list, min_words: int) -> list:
     返回json list
     """
 
-    # FIX这里逻辑有问题,len(element["text"].split())而element["text"]='金融机构合规管理办法'最终打印的是1
     def is_complete_dict(element: dict, min_words) -> bool:
         return not all(
             [
-                isinstance(element["text"], str) and len(element["text"].split()) < min_words,
+                isinstance(element["text"], str) and len(element["text"].replace(" ", "")) < min_words,
                 element["type"] != "Image",
                 element["type"] != "Table",
             ]
@@ -263,13 +294,24 @@ def filter_words(input_list: list, min_words: int) -> list:
 
 
 class FileConverter:
-    # TODO 写注释
-    def __init__(self, paths):
+    """文件转换类
+    paths:读取文件路径列表
+    支持格式:pdf, html, csv
+    例:
+        file_converter = FileConverter(["base.csv","Attention Is All You Need.pdf"])
+    或
+        file_converter = FileConverter(["fraud.csv"])
+    注意:
+        html推荐变成带文字的pdf格式再进行处理(比如让大模型帮你生成md格式再转化pdf),个人认为是有反爬导致的无法转化html
+    """
+
+    def __init__(self, paths: list):
         self.paths = paths
         self.json_lists = []
         self.QA_pairs = []
 
     def file_to_json_lists(self):
+        """将文件转换为json list"""
         if self.paths == []:
             print("No file path provided.")
             return None
@@ -287,8 +329,11 @@ class FileConverter:
                 self.json_lists.append(None)
         return self.json_lists
 
-    def json_lists_to_QA_pairs(self, choice: str, time_sleep: int = 60):
-        # TODO 这里要有异常处理只可以跑一次
+    def json_lists_to_QA_pairs(self, choice: Literal["chatbot", "fraud", "compliance"], time_sleep: int = 60):
+        """将json list转换为问答对
+        choice:选择生成问答对的类型,可选值:chatbot, fraud, compliance
+        time_sleep:生成问答对间隔时间
+        """
         if self.json_lists == []:
             print("please run file_to_json_lists() first")
             return None
@@ -300,25 +345,37 @@ class FileConverter:
                 for flag, element in enumerate(json_list):
                     print(f"Converting {self.paths[i]} element {flag + 1} to QA pairs...")
                     self.QA_pairs.append(generate_questions_on_chatbot(element, API_KEY, API_BASE, MODEL))
+                    print(self.QA_pairs[-1])
+                    print("-" * 50)
                     time.sleep(time_sleep)
         if choice == "fraud":
             for i, json_list in enumerate(self.json_lists):
                 for flag, element in enumerate(json_list):
                     print(f"Converting {self.paths[i]} element {flag + 1} to QA pairs...")
                     self.QA_pairs.append(generate_questions_on_fraud(element, API_KEY, API_BASE, MODEL))
+                    print(self.QA_pairs[-1])
+                    print("-" * 50)
                     time.sleep(time_sleep)
         if choice == "compliance":
             for i, json_list in enumerate(self.json_lists):
                 for flag, element in enumerate(json_list):
                     print(f"Converting {self.paths[i]} element {flag + 1} to QA pairs...")
-                    self.QA_pairs.append(generate_questions_on_compliance(element, API_KEY, API_BASE, MODEL))
+                    self.QA_pairs.extend(generate_questions_on_compliance(element, API_KEY, API_BASE, MODEL))
+                    print(self.QA_pairs[-2], "\n", self.QA_pairs[-1])
+                    print("-" * 50)
                     time.sleep(time_sleep)
 
     def read_json_lists(self, filename: str):
+        """读取json list文件
+        filename:json list文件名
+        """
         with open(filename, "r", encoding="utf-8") as f:
             self.json_lists.append(json.load(f))
 
     def save_json_lists(self, filename: str = "output.json"):
+        """保存json list文件为json格式
+        filename:json list文件名
+        """
         if self.json_lists == []:
             print("please run file_to_json_lists() first")
             return None
@@ -327,7 +384,9 @@ class FileConverter:
                 json.dump(json_list, f, indent=2, ensure_ascii=False)
 
     def save_QA_pairs(self, filename: str = "output_QA_pairs.csv"):
-        # 这里相当于把输入的所有数据全部变成一个list里面的问答对了，因为实例化一个类一定是同一类的数据。
+        """保存问答对文件为csv格式
+        filename:问答对文件名
+        """
         if self.QA_pairs == []:
             print("please run json_lists_to_QA_pairs() first")
             return None
@@ -336,20 +395,9 @@ class FileConverter:
 
 
 if __name__ == "__main__":
-    # 这里的路径自己改，可以是一个路径，也可以是一个list存放很多路径
-    # FIXME 这里需要改一下，就算是一个路径也要外套一个list后面看怎么改好
-    # file_converter = FileConverter(
-    #     [
-    #         r"C:\Users\78661\Desktop\files\base.csv",
-    #         r"C:\Users\78661\Desktop\files\Vaswani 等 - 2023 - Attention Is All You Need.pdf",
-    #     ]
-    # )
-    #
-    file_converter = FileConverter(["NVIDIA54.pdf"])
+    file_converter = FileConverter(["a.pdf"])
     jsons = file_converter.file_to_json_lists()
-    # # 这里可以选择三种转换方式，但我写的代码有一个局限就是一个类只可以做一种转换，想要转换三种就要做三个类，这里假装三个是一个类里面的
-    # file_converter.save_json_lists()
-    # file_converter.read_json_lists("qizha.json")
-    # FIXME 可以固定参数三个到时候改一下就行了
-    QA_pairs = file_converter.json_lists_to_QA_pairs("chatbot", time_sleep=0)
+    file_converter.save_json_lists()
+    # file_converter.read_json_lists("output.json_1.json")
+    QA_pairs = file_converter.json_lists_to_QA_pairs("compliance", time_sleep=0)
     file_converter.save_QA_pairs()
