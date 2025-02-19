@@ -14,4 +14,5 @@
 API_KEY = "sk-dfcc906b01454248b2e100aeccef342b"
 API_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 MODEL = "qwen-max"
+MODEL_PICTURE = "qwen-vl-plus"
 # --------------------------------------------------------------------
