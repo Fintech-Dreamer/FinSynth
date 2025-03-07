@@ -6,7 +6,7 @@ uploads
 *.db
 _test
 Pipfile
-!/data
 /data/*
+!/data/readme.txt
 /open_webui/data/*
 .webui_secret_key
