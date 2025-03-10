@@ -2,6 +2,7 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import File, UploadFile
 from pydantic import BaseModel
 from typing import List, Optional
 import os
@@ -84,6 +85,10 @@ async def chat_completion(request: ChatRequest, _: bool = Depends(verify_api_key
     print(request)
     return await service.generate_response(request)
 
+# 新增的图片上传路由
+@app.post("/v1/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    return {"message": "对不起，我无法处理图片"}
 
 @app.get("/v1/models")
 async def list_models():
