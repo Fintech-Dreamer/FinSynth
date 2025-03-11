@@ -846,7 +846,6 @@ async def inspect_websocket(request: Request, call_next):
     return await call_next(request)
 
 
-print(CORS_ALLOW_ORIGIN)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ALLOW_ORIGIN,

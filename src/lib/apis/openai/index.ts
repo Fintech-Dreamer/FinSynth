@@ -385,7 +385,7 @@ export const generateOpenAIChatCompletion = async (
 	if (error) {
 		throw error;
 	}
-
+	console.log(res);
 	return res;
 };
 
