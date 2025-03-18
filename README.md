@@ -1,5 +1,7 @@
 # FinSynth
 
+![FinSynth](./docs/FinSynth.png)
+
 [英文文档](./docs/README.en.md)
 
 ## 项目介绍
@@ -88,3 +90,16 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 ### 微调数据集
 
 [Dataset ](https://huggingface.co/datasets/Fintech-Dreamer/FinSynth_data)
+
+## 技术细节
+
+### 前端和后端
+
+使用Open WebUI框架实现的大模型交互平台
+
+### 大模型
+
+大模型从微调到编写后端这部分完全是自己编写的
+
+- 后端用python fastapi编写
+- 实现了流式输出：用流式输出的方式调用大模型API，能够实时返回中间结果，减少用户的阅读等待时间，并降低请求的超时风险。

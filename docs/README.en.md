@@ -1,5 +1,7 @@
 # FinSynth
 
+![FinSynth](FinSynth.png)
+
 ## Project Introduction
 
 A large language model interaction platform implemented based on the Open WebUI framework, with the backend models fine-tuned and developed by our team.
@@ -87,3 +89,15 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 
 [Dataset](https://huggingface.co/datasets/Fintech-Dreamer/FinSynth_data)
 
+## Technical Details
+
+### Frontend and Backend
+
+A large model interaction platform implemented using the Open WebUI framework.
+
+### Large Model
+
+The entire process, from fine-tuning the large model to writing the backend, was done in-house.
+
+- The backend is written in Python FastAPI.
+- Streaming output is implemented: The large model API is called in a streaming manner, allowing for real-time return of intermediate results. This reduces users' waiting time for reading and lowers the risk of request timeouts.
