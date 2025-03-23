@@ -59,6 +59,7 @@ uvicorn open_webui.main:app --host 0.0.0.0 --port 8080 --reload
 
 ```powershell
 cd model
+conda activate FinSynth
 pip install -r requirements.txt -U
 uvicorn model_chatbot:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -67,6 +68,7 @@ uvicorn model_chatbot:app --host 0.0.0.0 --port 8000 --reload
 
 ```powershell
 cd model
+conda activate FinSynth
 uvicorn model_fraud:app --host 0.0.0.0 --port 8001 --reload
 ```
 
@@ -74,6 +76,7 @@ uvicorn model_fraud:app --host 0.0.0.0 --port 8001 --reload
 
 ```powershell
 cd model
+conda activate FinSynth
 uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 ```
 
