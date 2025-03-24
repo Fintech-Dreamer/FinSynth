@@ -19,7 +19,7 @@ This system contains three specialized models addressing distinct domains:
 
 ## How to Run
 
-***Please wait patiently for the first run, it will pull a lot of files, if the terminal does not report an error, there is no problem***
+***Please wait patiently for the first run, it will pull a lot of files, if the terminal does not report an error, there is no problem, and you can refresh the web page after all the runs are completed***
 
 ```powershell
 git clone https://github.com/Fintech-Dreamer/FinSynth.git
