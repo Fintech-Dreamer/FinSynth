@@ -18,6 +18,11 @@
 
 ## 运行方式
 
+```powershell
+git clone https://github.com/Fintech-Dreamer/FinSynth.git
+cd FinSynth
+```
+
 ### 快速运行
 
 请自行下载docker并且换源（防止无法拉取镜像）
@@ -32,14 +37,7 @@ docker-compose up --build
 
 请先自行安装[NVM](https://nvm.p6p.net/)和[Anaconda](https://www.anaconda.com/download)
 
-一共需要开启五个终端
-
-```powershell
-git clone https://github.com/Fintech-Dreamer/FinSynth.git
-cd FinSynth
-```
-
-#### 前端(FinSynth文件夹)
+一共需要开启五个终端前端(FinSynth文件夹)
 
 终端1
 

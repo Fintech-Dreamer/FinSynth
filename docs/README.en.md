@@ -19,6 +19,11 @@ This system contains three specialized models addressing distinct domains:
 
 ## How to Run
 
+```powershell
+git clone https://github.com/Fintech-Dreamer/FinSynth.git
+cd FinSynth
+```
+
 ### Quick Start
 
 Please download Docker and change the source (to prevent failure in pulling the image)
@@ -34,11 +39,6 @@ Open the website `http://localhost:5173/`
 First, install [NVM](https://nvm.p6p.net/) and [Anaconda](https://www.anaconda.com/download) independently.
 
 You will need to launch **five terminal sessions** in total.
-
-```powershell
-git clone https://github.com/Fintech-Dreamer/FinSynth.git
-cd FinSynth
-```
 
 #### Frontend (FinSynth Directory)
 
