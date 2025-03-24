@@ -1,0 +1,10 @@
+# 后端服务
+FROM python:3.11 AS backend
+
+WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY backend .
+
+# 设置启动命令
+CMD ["uvicorn", "open_webui.main:app", "--host", "0.0.0.0", "--port", "8080"]

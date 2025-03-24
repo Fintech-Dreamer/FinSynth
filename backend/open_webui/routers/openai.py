@@ -469,6 +469,7 @@ async def get_models(
                             else {}
                         ),
                     },
+                    verify_ssl=False,
                 ) as r:
                     if r.status != 200:
                         # Extract response error details if available

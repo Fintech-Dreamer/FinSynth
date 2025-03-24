@@ -17,7 +17,19 @@ This system contains three specialized models addressing distinct domains:
 3. **Compliance Monitoring**
    Summarizes regulatory documents and compliance materials to help models ensure adherence to financial regulations.
 
-## Execution Instructions
+## How to Run
+
+### Quick Start
+
+Please download Docker and change the source (to prevent failure in pulling the image)
+
+```powershell
+docker-compose up --build
+```
+
+Open the website `http://localhost:5173/`
+
+### Running Frontend and Backend Separately
 
 First, install [NVM](https://nvm.p6p.net/) and [Anaconda](https://www.anaconda.com/download) independently.
 
@@ -28,7 +40,7 @@ git clone https://github.com/Fintech-Dreamer/FinSynth.git
 cd FinSynth
 ```
 
-### Frontend (FinSynth Directory)
+#### Frontend (FinSynth Directory)
 
 **Terminal 1**
 
@@ -38,7 +50,7 @@ nvm use 22.13.0
 npm install
 npm run dev
 ```
-### Backend (backend directory)
+#### Backend (backend directory)
 
 **Terminal 2**
 
@@ -52,7 +64,7 @@ cd backend
 pip install -r requirements.txt -U
 uvicorn open_webui.main:app --host 0.0.0.0 --port 8080 --reload
 ```
-### Large Language Model (model directory)
+#### Large Language Model (model directory)
 
 **Terminal 3**
 

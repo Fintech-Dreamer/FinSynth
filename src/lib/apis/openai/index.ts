@@ -237,7 +237,7 @@ export const getOpenAIModelsDirect = async (url: string, key: string) => {
 
 export const getOpenAIModels = async (token: string, urlIdx?: number) => {
 	let error = null;
-
+	console.log(OPENAI_API_BASE_URL);
 	const res = await fetch(
 		`${OPENAI_API_BASE_URL}/models${typeof urlIdx === 'number' ? `/${urlIdx}` : ''}`,
 		{

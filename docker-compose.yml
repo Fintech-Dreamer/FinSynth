@@ -1,0 +1,52 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - finsynth-network
+
+  backend:
+    image: finsynth-backend
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8080:8080"
+    networks:
+      - finsynth-network
+    volumes:
+      - ./backend/data:/app/backend/data # 外部映射数据库数据目录
+
+  model-chatbot:
+    build:
+      context: ./model
+      dockerfile: Dockerfile.chatbot
+    ports:
+      - "8000:8000"
+    networks:
+      - finsynth-network
+
+  model-compliance:
+    build:
+      context: ./model
+      dockerfile: Dockerfile.compliance
+    ports:
+      - "8001:8001"
+    networks:
+      - finsynth-network
+
+  model-fraud:
+    build:
+      context: ./model
+      dockerfile: Dockerfile.fraud
+    ports:
+      - "8002:8002"
+    networks:
+      - finsynth-network
+
+networks:
+  finsynth-network:
+    driver: bridge
