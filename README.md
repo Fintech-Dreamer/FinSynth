@@ -18,6 +18,8 @@
 
 ## 运行方式
 
+***第一次运行请耐心等待，会去拉取很多文件，如果终端没有报错就是没有问题***
+
 ```powershell
 git clone https://github.com/Fintech-Dreamer/FinSynth.git
 cd FinSynth
