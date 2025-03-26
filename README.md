@@ -66,7 +66,7 @@ uvicorn open_webui.main:app --host 0.0.0.0 --port 8080 --reload
 
 #### 大模型(model文件夹)
 
-终端3
+终端3——智能客服
 
 ```powershell
 cd model
@@ -75,7 +75,7 @@ pip install -r requirements.txt -U
 uvicorn model_chatbot:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-终端4
+终端4——欺诈检测
 
 ```powershell
 cd model
@@ -83,7 +83,7 @@ conda activate FinSynth
 uvicorn model_fraud:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-终端5
+终端5——合规监控
 
 ```powershell
 cd model
@@ -95,7 +95,7 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 
 ### 微调模型
 
-[聊天机器人](https://huggingface.co/Fintech-Dreamer/FinSynth_model_chatbot)
+[智能客服](https://huggingface.co/Fintech-Dreamer/FinSynth_model_chatbot)
 
 [欺诈检测](https://huggingface.co/Fintech-Dreamer/FinSynth_model_fraud)
 
@@ -117,3 +117,4 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 
 - 后端用python fastapi编写
 - 实现了流式输出：用流式输出的方式调用大模型API，能够实时返回中间结果，减少用户的阅读等待时间，并降低请求的超时风险。
+-更多的技术细节请咨询Fintech Dreamer组织
