@@ -16,7 +16,7 @@
 - 欺诈检测：从交易数据中提取模式和异常，以训练可以识别和预防欺诈行为的模型。
 - 合规监控：总结法规和合规文件，以帮助模型确保遵守金融法规。
 
-## 运行方式
+## 本地化部署方式
 
 ***第一次运行请耐心等待，会去拉取很多文件，如果终端没有报错就是没有问题，全部运行完毕后刷新网页使用即可***
 
@@ -25,8 +25,7 @@ git clone https://github.com/Fintech-Dreamer/FinSynth.git
 cd FinSynth
 ```
 
-### 快速运行
-
+### Method1： Docker快速部署
 请自行下载docker并且换源（防止无法拉取镜像）
 
 ```powershell
@@ -35,7 +34,7 @@ docker-compose up --build
 
 打开网站`http://localhost:5173/`
 
-### 前后端分离运行
+### Method 2： 前后端分离部署
 
 请先自行安装[NVM](https://nvm.p6p.net/)和[Anaconda](https://www.anaconda.com/download)
 
