@@ -117,4 +117,4 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 
 - 后端用python fastapi编写
 - 实现了流式输出：用流式输出的方式调用大模型API，能够实时返回中间结果，减少用户的阅读等待时间，并降低请求的超时风险。
--更多的技术细节请咨询Fintech Dreamer组织
+- 更多的技术细节请咨询Fintech Dreamer组织
