@@ -16,6 +16,8 @@
 - 欺诈检测：从交易数据中提取模式和异常，以训练可以识别和预防欺诈行为的模型。
 - 合规监控：总结法规和合规文件，以帮助模型确保遵守金融法规。
 
+多模态非结构化数据转换系统：https://github.com/Fintech-Dreamer/FinSynth-Data-Processing/ 
+
 ## 本地化部署方式
 
 ***第一次运行请耐心等待，会去拉取很多文件，如果终端没有报错就是没有问题，全部运行完毕后刷新网页使用即可***
@@ -93,7 +95,7 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 
 ## 其他
 
-### 微调模型
+### 微调大模型
 
 [智能客服](https://huggingface.co/Fintech-Dreamer/FinSynth_model_chatbot)
 
@@ -116,5 +118,4 @@ uvicorn model_compliance:app --host 0.0.0.0 --port 8002 --reload
 大模型从微调到编写后端这部分完全是自己编写的
 
 - 后端用python fastapi编写
-- 实现了流式输出：用流式输出的方式调用大模型API，能够实时返回中间结果，减少用户的阅读等待时间，并降低请求的超时风险。
 - 更多的技术细节请咨询Fintech Dreamer组织
