@@ -1,9 +1,1 @@
-FROM python:3.11
 
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
-COPY . .
-
-# 设置默认启动命令，但可以在 docker-compose.yml 中覆盖
-CMD ["uvicorn", "model_compliance:app", "--host", "0.0.0.0", "--port", "8001"]
